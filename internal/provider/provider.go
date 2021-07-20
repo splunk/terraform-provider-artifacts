@@ -52,7 +52,7 @@ func New(version string) func() *schema.Provider {
 					Description: "URL of the Artifactory service",
 				},
 				usernameKey: {
-					Type:        schema.TypeString,
+					Type: schema.TypeString,
 					// username is optional because this provider may add a "download" data source or other functionality
 					// that doesn't always require authentication.
 					Optional:    true,
