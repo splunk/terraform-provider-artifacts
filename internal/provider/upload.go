@@ -18,6 +18,7 @@ package provider
 
 import (
 	"context"
+	"fmt"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	"path/filepath"
@@ -27,7 +28,7 @@ import (
 
 func resourceUpload() *schema.Resource {
 	return &schema.Resource{
-		Description:   "Upload a file to a URL",
+		Description:   "Upload a file to Artifactory",
 		CreateContext: resourceUploadCreate,
 		ReadContext:   resourceUploadRead,
 		UpdateContext: resourceUploadUpdate,
@@ -45,7 +46,7 @@ func resourceUpload() *schema.Resource {
 				Required:    true,
 			},
 			deleteOldPath: {
-				Description: "Should previously uploaded file be deleted",
+				Description: fmt.Sprintf("Set to false if the remote file should be orphaned on destruction of the resource or change of %s value. Defaults to true.", uploadPathKey),
 				Type:        schema.TypeBool,
 				Optional:    true,
 				Default:     true,

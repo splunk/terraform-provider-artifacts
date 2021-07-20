@@ -14,21 +14,10 @@
  * limitations under the License.
  */
 
-package main
+package tools
 
 import (
-	"github.com/hashicorp/terraform-plugin-sdk/v2/plugin"
-	"terraform-provider-artifacts/internal/provider"
+	// documentation generation
+	// for "go generate" to be able to use tfplugindocs, _something_ needs to reference it, so here we do so
+	_ "github.com/hashicorp/terraform-plugin-docs/cmd/tfplugindocs"
 )
-
-//go:generate go run github.com/hashicorp/terraform-plugin-docs/cmd/tfplugindocs
-
-const (
-	version = "dev"
-)
-
-func main() {
-	opts := &plugin.ServeOpts{ProviderFunc: provider.New(version)}
-
-	plugin.Serve(opts)
-}
