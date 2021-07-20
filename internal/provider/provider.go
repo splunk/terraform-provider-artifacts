@@ -1,18 +1,16 @@
-/*
- * Copyright 2021 Splunk, Inc.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
+// Copyright 2021 Splunk, Inc.
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//     http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
 
 package provider
 
@@ -51,20 +49,22 @@ func New(version string) func() *schema.Provider {
 				urlKey: {
 					Type:        schema.TypeString,
 					Required:    true,
-					Description: "URL of the artifacts service",
+					Description: "URL of the Artifactory service",
 				},
 				usernameKey: {
-					Type:        schema.TypeString,
+					Type: schema.TypeString,
+					// username is optional because this provider may add a "download" data source or other functionality
+					// that doesn't always require authentication.
 					Optional:    true,
 					DefaultFunc: schema.EnvDefaultFunc(usernameEnvKey, nil),
-					Description: "Username to use for authentication to the artifacts service",
+					Description: fmt.Sprintf("Username used to authenticate to Artifactory. May be set via the `%s` environment variable instead.", usernameEnvKey),
 				},
 				passwordKey: {
 					Type:         schema.TypeString,
 					Optional:     true,
 					DefaultFunc:  schema.EnvDefaultFunc(passwordEnvKey, nil),
 					RequiredWith: []string{usernameKey},
-					Description:  fmt.Sprintf("Password to use for authentication to the artifacts service. Must be set if %s is set.", usernameKey),
+					Description:  fmt.Sprintf("Password used to authenticate to Artifactory. Must be set if %s is set. May be set via the `%s` environment variable instead.", usernameKey, passwordEnvKey),
 				},
 			},
 			ResourcesMap: map[string]*schema.Resource{

@@ -12,9 +12,12 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package client
+// +build tools
 
-// Checksums represents the checksums returned from the file info endpoint.
-type Checksums struct {
-	SHA1 string
-}
+package tools
+
+import (
+	// documentation generation
+	// for "go generate" to be able to use tfplugindocs, _something_ needs to reference it, so here we do so
+	_ "github.com/hashicorp/terraform-plugin-docs/cmd/tfplugindocs"
+)
