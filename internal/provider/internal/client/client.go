@@ -65,7 +65,9 @@ func (c Client) Checksums(path string) (checksums Checksums, err error) {
 		return checksums, fmt.Errorf("unable to create GET request for url %s", url)
 	}
 
-	c.setBasicAuth(request)
+	if err := c.setBasicAuth(request); err != nil {
+		return Checksums{}, err
+	}
 
 	response, err := c.Do(request)
 	if err != nil {
@@ -124,7 +126,9 @@ func (c Client) Upload(path string, filename string) error {
 		return fmt.Errorf("unable to create PUT request for %s to %s: %s", filename, url, err)
 	}
 
-	c.setBasicAuth(request)
+	if err := c.setBasicAuth(request); err != nil {
+		return err
+	}
 
 	sha1, err := c.SHA1(filename)
 	if err != nil {
@@ -155,7 +159,9 @@ func (c Client) Delete(path string) error {
 		return fmt.Errorf("unable to create DELETE request for %s: %s", url, err)
 	}
 
-	c.setBasicAuth(request)
+	if err := c.setBasicAuth(request); err != nil {
+		return err
+	}
 
 	response, err := c.Do(request)
 	if err != nil {
