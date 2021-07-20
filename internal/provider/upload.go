@@ -92,7 +92,9 @@ func resourceUploadRead(ctx context.Context, d *schema.ResourceData, meta interf
 		// missing SHA1 value indicates the resource wasn't found on the service, so mark this resource as missing
 		d.SetId("")
 	} else {
-		d.Set(sha1Key, checksums.SHA1)
+		if err := d.Set(sha1Key, checksums.SHA1); err != nil {
+			return diag.FromErr(err)
+		}
 	}
 
 	return nil
@@ -138,7 +140,9 @@ func resourceUploadDiff(ctx context.Context, d *schema.ResourceDiff, meta interf
 		return err
 	}
 
-	d.SetNew(sha1Key, sha1)
+	if err := d.SetNew(sha1Key, sha1); err != nil {
+		return err
+	}
 
 	return nil
 }
