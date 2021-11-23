@@ -27,4 +27,5 @@ const (
 	uploadFileKey     = "upload_file"
 	deleteOldPath     = "delete_old_path"
 	sha1Key           = "sha1"
+	triggersKey       = "triggers"
 )
