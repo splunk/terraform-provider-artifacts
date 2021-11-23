@@ -39,6 +39,7 @@ resource "artifacts_upload" "retain_versions" {
 ### Optional
 
 - **delete_old_path** (Boolean) Set to false if the remote file should be orphaned on destruction of the resource or change of upload_path value. Defaults to true.
+- **triggers** (Map of String) Arbitrary map of values that, when changed, will trigger re-uploading of this resource's file.
 
 ### Read-Only
 
