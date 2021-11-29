@@ -1,0 +1,9 @@
+## 1.1.0 (November 29, 2021)
+
+FEATURES:
+
+* **Resource Enhancement:** `artifacts_upload` implements `triggers`
+
+## 1.0.0 (August 31, 2021)
+
+Initial version

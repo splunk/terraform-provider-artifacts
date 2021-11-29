@@ -17,9 +17,10 @@ package provider
 import (
 	"context"
 	"fmt"
+	"path/filepath"
+
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
-	"path/filepath"
 
 	"terraform-provider-artifacts/internal/provider/internal/client"
 )
@@ -53,6 +54,12 @@ func resourceUpload() *schema.Resource {
 				Description: "SHA1 of the uploaded file",
 				Type:        schema.TypeString,
 				Computed:    true,
+			},
+			triggersKey: {
+				Type:        schema.TypeMap,
+				Description: "Arbitrary map of values that, when changed, will trigger re-uploading of this resource's file.",
+				Optional:    true,
+				Elem:        &schema.Schema{Type: schema.TypeString},
 			},
 		},
 	}
@@ -129,18 +136,21 @@ func resourceUploadDelete(ctx context.Context, d *schema.ResourceData, meta inte
 	return nil
 }
 
+// resourceUploadDiff marks the checksum field as "known after apply" when any field that could
+// impact the artifact's contents has a change.
 func resourceUploadDiff(ctx context.Context, d *schema.ResourceDiff, meta interface{}) error {
-	client := meta.(*client.Client)
-
-	uploadFile := d.Get(uploadFileKey).(string)
-
-	sha1, err := client.SHA1(uploadFile)
-	if err != nil {
-		return err
+	computeWhenKeys := []string{
+		uploadFileKey, // the file's path is the obvious "may result in changed contents" scenario
+		triggersKey,   // also check for changes to any triggers, as they are used to convey a potential change
 	}
 
-	if err := d.SetNew(sha1Key, sha1); err != nil {
-		return err
+	for _, key := range computeWhenKeys {
+		if d.HasChange(key) {
+			if err := d.SetNewComputed(sha1Key); err != nil {
+				return err
+			}
+			break
+		}
 	}
 
 	return nil
